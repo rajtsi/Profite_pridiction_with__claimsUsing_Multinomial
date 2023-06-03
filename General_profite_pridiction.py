@@ -11,7 +11,8 @@
     # And risk free interest rate had been set between 4-6 generaly FD use to have 6 to 7.5 interest rate.
  
  term = 10
- customers = 100000
+ i_customers = 100000
+ cust_i_rate=10
  sumInsured = random.randint(400000, 600000)
  premium = random.randint(4000, 6000)
  rate = random.uniform(4, 6)    
@@ -40,9 +41,17 @@
 
  prize=[prize_1,prize_2,prize_3,prize_4,prize_5,prize_6,prize_7,prize_8]
     
-    
-    
-    
+ customers=[]
+ def customer_yearly():
+     customers=[]   
+     for i in range(term):
+        if(i):
+         customers.append(int(customers[i-1]*(1+(cust_i_rate/100))))
+        else:
+         customers.append(i_customers)                 
+     return customers
+ 
+ customers=customer_yearly()                         
  x=[]
  y=[]   
  for i in range(1,term+1):
@@ -54,7 +63,7 @@
  def randomClaim():
     claim = []
     for i in range(term):
-        claim.append(random.randint(0, customers))
+        claim.append(random.randint(0, customers[i]))
     return claim
  
   # Estimated probabilities for each disease category and will be used in finding number of peoples 
@@ -84,13 +93,13 @@
     randomclaim_list=randomClaim()
     
     p=0
-    for loop in randomclaim_list:
+    for i,loop in enumerate(randomclaim_list):
      claimed_people=estimate_claim_counts(loop, probabilities) 
      amount_claimed=0
      for prize_i,i_claim in zip(prize,claimed_people):
            amount_claimed+=prize_i*i_claim 
             
-     p=(p*((1+rate)/100) + sumInsured*customers -amount_claimed)
+     p=(p*((1+rate)/100) + sumInsured*customers[i] -amount_claimed)
      net_profit.append(p)
     return net_profit 
 
@@ -121,5 +130,4 @@
 
 
     
- 
  
